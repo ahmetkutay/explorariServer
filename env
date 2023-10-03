@@ -1,0 +1,3 @@
+MONGO_CONNECTION_STRING=mongodb+srv://akkaracair:cZ6Oo4kPbbhZdkqy@exploraricluster.sawxudf.mongodb.net/?retryWrites=true&w=majority
+MONGO_DB_USERNAME=akkaracair
+MONGO_DB_PASSWORD=cZ6Oo4kPbbhZdkqy
