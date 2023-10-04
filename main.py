@@ -1,12 +1,12 @@
 from fastapi import FastAPI
-from routes.v1 import users
+from routes.UserRoute import users
 from Database.mongoDBConnection import database
 from Configs import settings
 
 app = FastAPI()
 
 # Include API routes
-app.include_router(users.router, prefix="/v1/users")
+app.include_router(users.router, prefix="/api/users")
 
 
 # Dependency Injection for MongoDB connection
