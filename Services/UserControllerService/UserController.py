@@ -1,4 +1,5 @@
 from bson import ObjectId
+
 from Database.mongoDBConnection import database
 
 
@@ -22,3 +23,17 @@ class UserController:
     async def find_user_by_id(user_id: str) -> dict:
         db_user = await database.db.users.find_one({'_id': ObjectId(user_id)})
         return db_user
+
+    @staticmethod
+    async def find_user(search_parameters: str, search_data: str):
+        user = await database.db.users.find_one({search_parameters: search_data})
+        return user
+
+    @staticmethod
+    def identify_user_data(data: str) -> str:
+        if "@" in data and "." in data:
+            return "email"
+        elif data.isdigit() and len(data) == 10:
+            return "mobile_number"
+        else:
+            return "username"

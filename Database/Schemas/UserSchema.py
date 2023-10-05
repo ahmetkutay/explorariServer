@@ -1,10 +1,12 @@
 import random
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from passlib.context import CryptContext
 from pydantic import BaseModel, EmailStr, Field
 
+from Configs.settings import JWT_EXPIRE_MINUTES
 from Database.mongoDBConnection import database
+from Helpers.Auth import create_access_token
 from Services.UserControllerService.UserController import UserController
 
 # Password hashing context
@@ -83,3 +85,14 @@ class RegisterUser(BaseModel):
             refresh_token=self.refresh_token
         )
         return registered_user
+
+    async def login(self, password: str):
+        if pwd_context.verify(password, self.password):
+            # Password is correct, generate JWT token
+            access_token_expires = timedelta(minutes=JWT_EXPIRE_MINUTES)
+            access_token = create_access_token(
+                data={"sub": self.username}, expires_delta=access_token_expires
+            )
+            return access_token
+        else:
+            return None
