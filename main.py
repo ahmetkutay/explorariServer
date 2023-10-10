@@ -1,7 +1,6 @@
 from fastapi import FastAPI
 from routes.UserRoute import users
 from Database.mongoDBConnection import database
-from Configs import settings
 
 app = FastAPI()
 

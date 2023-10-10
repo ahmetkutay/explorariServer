@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Echo Message') {
             steps {
-                echo 'Hello, Jenkins! This is a simple Jenkins pipeline.'
+                echo 'Hello, Jenkins! This is a simple Jenkins pipeline for integration.'
             }
         }
     }
