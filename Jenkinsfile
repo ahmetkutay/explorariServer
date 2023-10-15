@@ -7,14 +7,6 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
-            steps {
-                script {
-                    git url: 'https://github.com/ahmetkutay/explorariServer.git'
-                }
-            }
-        }
-
         stage('Build and Push Docker Image') {
             steps {
                 script {
