@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         DOCKERHUB_CREDENTIALS = credentials('DockerHubAC')
-        DOCKER_IMAGE = credentials('DockerHubImage')
+        DOCKER_IMAGE = 'kutaykaracair/explorari-server:latest'
     }
 
     stages {
@@ -19,7 +19,7 @@ pipeline {
             steps {
                 script {
                     docker.build DOCKER_IMAGE
-                    docker.withRegistry('https://index.docker.io/v1/', DOCKERHUB_CREDENTIALS) {
+                    docker.withRegistry('https://index.docker.io/v1/', 'DOCKERHUB_CREDENTIALS') {
                         docker.image(DOCKER_IMAGE).push()
                     }
                 }
