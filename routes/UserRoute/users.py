@@ -4,7 +4,7 @@ from typing import List
 from fastapi import APIRouter, HTTPException, Query, status
 
 from Configs.settings import JWT_EXPIRE_MINUTES
-from Database.Schemas.UserSchema import ResponseUser, RegisterUser, RegisterResponseUser
+from Database.Schemas.UserSchema import ResponseUser, RegisterUser, RegisterResponseUser, LoginRequestModel
 from Helpers.Auth import create_access_token
 from Services.UserControllerService.UserController import UserController
 
@@ -12,7 +12,7 @@ router = APIRouter()
 
 
 @router.get("", response_model=List[ResponseUser])
-async def read_users(user_id: str = Query(None)):
+async def check_logged_in_or_log_in(user_id: str = Query(None)):
     try:
         user_data = await UserController.find_user_by_id(user_id)
         if user_data:
@@ -33,15 +33,17 @@ async def register_user(user_data: RegisterUser):
 
 
 @router.post("/login")
-async def login(username: str, password: str):
-    print(username, password)
+async def login(login_data: LoginRequestModel):
+    username = login_data.username
+    password = login_data.password
     search_parameter = UserController.identify_user_data(username)
     user = await UserController.find_user(search_parameter, username)
-    if user and await user.login(password):
-        access_token_expires = timedelta(minutes=JWT_EXPIRE_MINUTES)
+    if user and login_data.login(user, password):
+        access_token_expires = timedelta(minutes=float(JWT_EXPIRE_MINUTES))
         access_token = create_access_token(
-            data={"sub": user.username}, expires_delta=access_token_expires
+            data={"sub": user['username']}, expires_delta=access_token_expires
         )
+        await UserController.set_access_token(user['_id'], access_token)
         return {"access_token": access_token, "token_type": "bearer"}
     else:
         raise HTTPException(

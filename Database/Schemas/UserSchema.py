@@ -1,4 +1,5 @@
 import random
+from array import array
 from datetime import datetime, timedelta
 
 from passlib.context import CryptContext
@@ -81,18 +82,18 @@ class RegisterUser(BaseModel):
             mobile_number=self.mobile_number,
             verified=self.verified,
             verification_code=self.verification_code,
-            token=self.token,
+            access_token=self.token,
             refresh_token=self.refresh_token
         )
         return registered_user
 
-    async def login(self, password: str):
-        if pwd_context.verify(password, self.password):
-            # Password is correct, generate JWT token
-            access_token_expires = timedelta(minutes=JWT_EXPIRE_MINUTES)
-            access_token = create_access_token(
-                data={"sub": self.username}, expires_delta=access_token_expires
-            )
-            return access_token
+
+class LoginRequestModel(BaseModel):
+    username: str
+    password: str
+
+    def login(self: ResponseUser, user: array, password: str):
+        if self and pwd_context.verify(password, user['password']):
+            return True
         else:
             return None
