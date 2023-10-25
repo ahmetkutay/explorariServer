@@ -21,7 +21,7 @@ class ResponseUser(BaseModel):
     email: EmailStr
     mobile_number: str
     verified: bool
-    token: str
+    access_token: str
     refresh_token: str
     created_at: datetime
     updated_at: datetime
@@ -36,7 +36,7 @@ class RegisterResponseUser(BaseModel):
     mobile_number: str
     verified: bool
     verification_code: int
-    token: str
+    access_token: str
     refresh_token: str
 
 
@@ -49,7 +49,7 @@ class RegisterUser(BaseModel):
     mobile_number: str
     verified: bool = Field(default=False, alias="verified")
     verification_code: int = 100000 + random.randint(0, 900000)
-    token: str = ""
+    access_token: str = ""
     refresh_token: str = ""
     created_at: datetime = Field(default_factory=datetime.utcnow, alias="created_at")
     updated_at: datetime = Field(default_factory=datetime.utcnow, alias="updated_at")
