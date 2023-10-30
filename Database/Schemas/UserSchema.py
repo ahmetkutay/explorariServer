@@ -7,7 +7,7 @@ from pydantic import BaseModel, EmailStr, Field
 
 from Configs.settings import JWT_EXPIRE_MINUTES
 from Database.mongoDBConnection import database
-from Helpers.Auth import create_access_token
+from Helpers.AuthHelper import create_access_token
 from Services.UserControllerService.UserController import UserController
 
 # Password hashing context
@@ -38,6 +38,14 @@ class RegisterResponseUser(BaseModel):
     verification_code: int
     access_token: str
     refresh_token: str
+
+
+class RegisterRequestUser(BaseModel):
+    username: str
+    first_name: str
+    last_name: str
+    email: EmailStr
+    mobile_number: str
 
 
 class RegisterUser(BaseModel):
@@ -82,7 +90,7 @@ class RegisterUser(BaseModel):
             mobile_number=self.mobile_number,
             verified=self.verified,
             verification_code=self.verification_code,
-            access_token=self.token,
+            access_token=self.access_token,
             refresh_token=self.refresh_token
         )
         return registered_user

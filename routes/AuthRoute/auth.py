@@ -5,7 +5,7 @@ from fastapi import APIRouter, HTTPException, Query, status
 
 from Configs.settings import JWT_EXPIRE_MINUTES
 from Database.Schemas.UserSchema import ResponseUser, RegisterUser, RegisterResponseUser, LoginRequestModel
-from Helpers.Auth import create_access_token
+from Helpers.AuthHelper import create_access_token, encrypt_user_data
 from Services.UserControllerService.UserController import UserController
 
 router = APIRouter()
@@ -40,8 +40,9 @@ async def login(login_data: LoginRequestModel):
     user = await UserController.find_user(search_parameter, username)
     if user and login_data.login(user, password):
         access_token_expires = timedelta(minutes=float(JWT_EXPIRE_MINUTES))
+        encrypted_user = encrypt_user_data(user)
         access_token = create_access_token(
-            data={"sub": user['username']}, expires_delta=access_token_expires
+            data=encrypted_user, expires_delta=access_token_expires
         )
         await UserController.set_access_token(user['_id'], access_token)
         return {"access_token": access_token, "token_type": "bearer"}
