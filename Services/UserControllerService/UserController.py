@@ -37,3 +37,7 @@ class UserController:
             return "mobile_number"
         else:
             return "username"
+
+    @staticmethod
+    async def set_access_token(user_id: str, access_token: str):
+        await database.db.users.update_one({'_id': ObjectId(user_id)}, {"$set": {"access_token": access_token}})

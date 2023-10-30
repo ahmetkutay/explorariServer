@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/ExplorariServer.iml" filepath="$PROJECT_DIR$/.idea/ExplorariServer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/explorariServer.iml" filepath="$PROJECT_DIR$/.idea/explorariServer.iml" />
     </modules>
   </component>
 </project>

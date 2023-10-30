@@ -1,4 +1,5 @@
 import random
+from array import array
 from datetime import datetime, timedelta
 
 from passlib.context import CryptContext
@@ -6,7 +7,7 @@ from pydantic import BaseModel, EmailStr, Field
 
 from Configs.settings import JWT_EXPIRE_MINUTES
 from Database.mongoDBConnection import database
-from Helpers.Auth import create_access_token
+from Helpers.AuthHelper import create_access_token
 from Services.UserControllerService.UserController import UserController
 
 # Password hashing context
@@ -20,7 +21,7 @@ class ResponseUser(BaseModel):
     email: EmailStr
     mobile_number: str
     verified: bool
-    token: str
+    access_token: str
     refresh_token: str
     created_at: datetime
     updated_at: datetime
@@ -35,8 +36,16 @@ class RegisterResponseUser(BaseModel):
     mobile_number: str
     verified: bool
     verification_code: int
-    token: str
+    access_token: str
     refresh_token: str
+
+
+class RegisterRequestUser(BaseModel):
+    username: str
+    first_name: str
+    last_name: str
+    email: EmailStr
+    mobile_number: str
 
 
 class RegisterUser(BaseModel):
@@ -48,7 +57,7 @@ class RegisterUser(BaseModel):
     mobile_number: str
     verified: bool = Field(default=False, alias="verified")
     verification_code: int = 100000 + random.randint(0, 900000)
-    token: str = ""
+    access_token: str = ""
     refresh_token: str = ""
     created_at: datetime = Field(default_factory=datetime.utcnow, alias="created_at")
     updated_at: datetime = Field(default_factory=datetime.utcnow, alias="updated_at")
@@ -81,18 +90,18 @@ class RegisterUser(BaseModel):
             mobile_number=self.mobile_number,
             verified=self.verified,
             verification_code=self.verification_code,
-            token=self.token,
+            access_token=self.access_token,
             refresh_token=self.refresh_token
         )
         return registered_user
 
-    async def login(self, password: str):
-        if pwd_context.verify(password, self.password):
-            # Password is correct, generate JWT token
-            access_token_expires = timedelta(minutes=JWT_EXPIRE_MINUTES)
-            access_token = create_access_token(
-                data={"sub": self.username}, expires_delta=access_token_expires
-            )
-            return access_token
+
+class LoginRequestModel(BaseModel):
+    username: str
+    password: str
+
+    def login(self: ResponseUser, user: array, password: str):
+        if self and pwd_context.verify(password, user['password']):
+            return True
         else:
             return None

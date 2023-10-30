@@ -1,20 +1,30 @@
 pipeline {
     agent any
 
+    environment {
+        DOCKERHUB_CREDENTIALS = credentials('DockerHubAC')
+        DOCKER_IMAGE = 'kutaykaracair/explorari-server:latest'
+    }
+
     stages {
-        stage('Echo Message') {
+        stage('Build and Push Docker Image') {
             steps {
-                echo 'Hello, Jenkins! This is a simple Jenkins pipeline for integration.'
+                script {
+                    docker.build DOCKER_IMAGE
+                    docker.withRegistry('https://index.docker.io/v1/', 'DOCKERHUB_CREDENTIALS') {
+                        docker.image(DOCKER_IMAGE).push()
+                    }
+                }
             }
         }
     }
 
     post {
         success {
-            echo 'The pipeline ran successfully!'
+            echo 'Image push successful!'
         }
         failure {
-            echo 'The pipeline failed.'
+            echo 'Image push failed!'
         }
     }
 }

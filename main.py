@@ -1,11 +1,15 @@
 from fastapi import FastAPI
-from routes.UserRoute import users
+
+from Middlewares.JWTMiddleware import JWTMiddleware
+from routes.AuthRoute import auth
 from Database.mongoDBConnection import database
 
 app = FastAPI()
 
+# Add JWT Middleware
+app.add_middleware(JWTMiddleware)
 # Include API routes
-app.include_router(users.router, prefix="/api/users")
+app.include_router(auth.router, prefix="/api/auth")
 
 
 # Dependency Injection for MongoDB connection
